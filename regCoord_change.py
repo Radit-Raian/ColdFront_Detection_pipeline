@@ -1,9 +1,10 @@
 import os
 from glob import glob
 from ciao_contrib.runtool import dmcoords
-import pandas as pd
 from astropy.coordinates import SkyCoord
 import astropy.units as u
+from astropy.io import fits
+import numpy as np
 
 base_dir = "data"
 
@@ -51,16 +52,18 @@ for obsid in os.listdir(base_dir):
         dmcoords.y = y
         dmcoords.opt = "sky"
         dmcoords()
-
+        
         c = SkyCoord(dmcoords.ra, dmcoords.dec, unit=(u.hourangle, u.deg))
         ra_list.append(c.ra.deg)
         dec_list.append(c.dec.deg)
 
-    output_file = os.path.join(repro_path, f"{obsid}_src.csv")
+    col1 = fits.Column(name='ra', format='D', array=np.array(ra_list))
+    col2 = fits.Column(name='dec', format='D', array=np.array(dec_list))
+    hdu = fits.BinTableHDU.from_columns([col1, col2])
 
-    df = pd.DataFrame({"RA": ra_list, "Dec": dec_list})
-    df.to_csv(output_file, index=False)
+    output_file = os.path.join(repro_path, f"{obsid}_src.fits")
+    hdu.writeto(output_file, overwrite=True)
 
-    print(f"  Saved: {output_file}")
+    print(f"  Saved CIAO-compatible FITS table: {output_file}")
 
 print("\nAll ObsIDs processed.")
