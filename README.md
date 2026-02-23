@@ -2,9 +2,6 @@
 
 initial running for 16142, 16143, 16626, 16627 (reference)
 
-dmfilth
-→ merge_obs
-
 ### CIAO Tool: `chandra_repro`
 
 run from parent directory at the location of four ObsID, for my analysis- data/
@@ -176,30 +173,21 @@ dmhedit infile="./16142_background_clean.evt" \
 blanksky_image bkgfile=16142_background_clean.evt outroot=16142_blank \
                imgfile=16142_0.5-7_thresh.img tmpdir=./ clobber=yes
 ```
-### CIAO Tool: `fluximage`,`mkpsfmap`,`wavdetect`
+### CIAO Tool: `fluximage`
 
 ```bash
 punlearn fluximage
 fluximage infile=./acisf16142_reproj_evt2.fits outroot=./16142_reprojected binsize=1 bands=0.5:7:2.3 clobber=yes
-punlearn mkpsfmap
-mkpsfmap infile=./16142_reprojected_0.5-7_thresh.img \
-         outfile=./16142_reprojected_0.5-7.psf \
-         energy=2.3 ecf=0.9 clobber=yes
-punlearn wavdetect
-wavdetect infile=./16142_reprojected_0.5-7_thresh.img \
-         psffile=./16142_reprojected_0.5-7.psf \
-         expfile=./16142_reprojected_0.5-7_thresh.expmap \
-         outfile=./16142_reprojected_src_0.5-7.fits \
-         scellfile=./16142_reprojected_scell_0.5-7.fits \
-         imagefile=./16142_reprojected_imgfile_0.5-7.img \
-         defnbkgfile=./16142_reprojected_defnbkg_0.5-7.fits \
-         regfile=./16142_reprojected_src_0.5-7-noem.reg \
-         scales="1 2 4 8 16 32" \
-         maxiter=3 sigthresh=5e-6 ellsigma=5.0 \
-         clobber=yes
 ```
-run this before going to source_extraction
 
+### CIAO Tool: `merge_obs`
+
+```bash
+punlearn merge_obs
+```
+
+####Draft (Not run yet)!
+run this before going to source_extraction
 ```bash
 python bkg.py
 ```
