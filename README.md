@@ -93,14 +93,39 @@ Align the images
 ```bash
 punlearn wcs_match
 
-pset wcs_match infile=16142_src.asc
-pset wcs_match refsrcfile="../../16627/repro/16627_src.asc"
+pset wcs_match infile=16142_src.fits
+pset wcs_match refsrcfile=../../16627/repro/16627_src.fits
 pset wcs_match outfile=16142.xform
 pset wcs_match wcsfile=16142_0.5-7_thresh.img
 pset wcs_match method=trans
 pset wcs_match radius=2.0
-pset wcs_match verbose=1
-
+pset wcs_match clobber=yes
 wcs_match
-clobber=yes
+
+dmlist 16142.xform"[cols a11,a12,a21,a22,t1,t2]" data,clean
+```
+
+### CIAO Tool: `wcs_update`
+
+updating the aspect solutions and event files accordingly
+
+```bash
+punlearn wcs_update
+
+pset wcs_update infile=pcadf16142_000N001_asol1.fits
+pset wcs_update outfile=pcadf16142_000N001_corrected_asol1.fits
+pset wcs_update transformfile=16142.xform
+pset wcs_update wcsfile=16142_0.5-7_thresh.img
+wcs_update
+```
+
+```bash
+punlearn wcs_update
+
+dmcopy acisf16142_cleaned_evt2.fits acisf16142_corrected_evt2.fits
+pset wcs_update infile=acisf16142_corrected_evt2.fits
+pset wcs_update outfile=acisf16142_wcs_corrected_evt2.fits
+pset wcs_update transformfile=16142.xform
+pset wcs_update wcsfile=16142_0.5-7_thresh.img
+wcs_update
 ```
