@@ -29,9 +29,9 @@ run from the repro/ files and ardlib is global and so need to change everytime s
 punlearn ardlib
 acis_set_ardlib ./acisf16142_repro_bpix1.fits
 ```
-### CIAO Tool: `dmextract`, `deflare`, `dmcopy'
+### CIAO Tool: `dmextract`, `deflare`, `dmcopy`
 
-creates the lightcurve by dmextract, deflare used for deflaring and dmcopy to GTI to Event File
+creates the lightcurve by `dmextract`, `deflare` used for deflaring and `dmcopy` to GTI to Event File
 
 ```bash
 punlearn dmextract
@@ -44,7 +44,7 @@ eog 16142_lc.png
 punlearn dmcopy
 dmcopy "acisf16142_repro_evt2.fits[@16142_gti.fits]" acisf16142_cleaned_evt2.fits clobber=yes
 ```
-### CIAO Tool: `fluximage'
+### CIAO Tool: `fluximage`
 
 create temporary fluximage and exposure maps
 
@@ -53,3 +53,31 @@ punlearn fluximage
 fluximage infile=./acisf16142_cleaned_evt2.fits outroot=./16142 binsize=1 bands=0.5:7:2.3 clobber=yes
 ```
 
+### CIAO Tool: `mkpsfmap`
+
+create psfmaps for wavedetect to identify sources
+
+```bash
+punlearn mkpsfmap
+mkpsfmap infile=./16142_0.5-7_thresh.img \
+         outfile=./16142_0.5-7.psf \
+         energy=2.3 ecf=0.9 clobber=yes
+```
+### CIAO Tool: `wavdetect`
+
+make source lists in region files
+
+```bash
+punlearn wavdetect
+wavdetect infile=./16142_0.5-7_thresh.img \
+         psffile=./16142_0.5-7.psf \
+         expfile=./16142_0.5-7_thresh.expmap \
+         outfile=./16142_src_0.5-7.fits \
+         scellfile=./16142_scell_0.5-7.fits \
+         imagefile=./16142_imgfile_0.5-7.img \
+         defnbkgfile=./16142_defnbkg_0.5-7.fits \
+         regfile=./16142_src_0.5-7-noem.reg \
+         scales="1 2 4 8 16 32" \
+         maxiter=3 sigthresh=5e-6 ellsigma=5.0 \
+         clobber=yes
+```
