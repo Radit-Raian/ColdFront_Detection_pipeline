@@ -184,6 +184,13 @@ fluximage infile=./acisf16142_reproj_evt2.fits outroot=./16142_reprojected binsi
 
 ```bash
 punlearn merge_obs
+echo "../16142/repro/acisf16142_reproj_evt2.fits[ccd_id=0:3]" > clean_evt.list
+echo "../16143/repro/acisf16143_reproj_evt2.fits[ccd_id=0:3]" >> clean_evt.list
+echo "../16626/repro/acisf16626_reproj_evt2.fits[ccd_id=0:3]" >> clean_evt.list
+echo "../16627/repro/acisf16627_corrected_evt2.fits[ccd_id=0:3]" >> clean_evt.list
+
+punlearn merge_obs
+merge_obs @clean_evt.list merged_output/ bin=1 bands=broad clobber=yes
 ```
 
 # Draft (Not run yet)!
