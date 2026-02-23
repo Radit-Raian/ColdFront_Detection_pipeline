@@ -78,7 +78,7 @@ wavdetect infile=./16142_0.5-7_thresh.img \
          maxiter=3 sigthresh=5e-6 ellsigma=5.0 \
          clobber=yes
 ```
-# Changing Coordinates for further analysis
+# Correcting Absolute Astrometry
 
 Further analysis needs the RA-Dec coordinate system in the decimal system.
 
@@ -86,10 +86,21 @@ Further analysis needs the RA-Dec coordinate system in the decimal system.
 python regCoord_change.py
 ```
 
-### CIAO Tool: `reproject_aspect`
+### CIAO Tool: `wcs_match`
 
 Align the images
 
 ```bash
-punlearn reporject_aspect
+punlearn wcs_match
+
+pset wcs_match infile=16142_src.asc
+pset wcs_match refsrcfile="../../16627/repro/16627_src.asc"
+pset wcs_match outfile=16142.xform
+pset wcs_match wcsfile=16142_0.5-7_thresh.img
+pset wcs_match method=trans
+pset wcs_match radius=2.0
+pset wcs_match verbose=1
+
+wcs_match
+clobber=yes
 ```
