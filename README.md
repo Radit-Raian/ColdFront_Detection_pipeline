@@ -198,7 +198,7 @@ wavdetect infile=./16142_reprojected_0.5-7_thresh.img \
          maxiter=3 sigthresh=5e-6 ellsigma=5.0 \
          clobber=yes
 ```
-run this before going to dmfilth
+run this before going to source_extraction
 
 ```bash
 python bkg.py
@@ -208,9 +208,15 @@ python bkg.py
 
 ```bash
 dmfilth infile=16142_reprojected_0.5-7_flux.img \
-        outfile=16142_src_extracted.img \
+        outfile=16142_src_extracted_flux.fits \
         method=POLY \
         srclist=@16142_reprojected_src_0.5-7-noem.reg \
         bkglist=@16142_bkg_poly.reg \
         clobber=yes
+```
+### CIAO Tool: `dmcopy`
+
+```bash
+dmcopy "acisf16142_reproj_evt2.fits[exclude sky=region(16142_reprojected_src_0.5-7-noem.reg)]" \
+       acisf16142_nosrc_evt2.fits
 ```
