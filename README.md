@@ -2,10 +2,7 @@
 
 initial running for 16142, 16143, 16626, 16627 (reference)
 
-fluximage
-→ mkpsfmap
-→ wavdetect
-→ reproject_aspect
+ reproject_aspect
 → reproject_events
 → blanksky
 → fluximage
