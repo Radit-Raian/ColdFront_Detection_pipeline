@@ -18,7 +18,7 @@ run from parent directory at the location of four ObsID, for my analysis- data/
 ```bash
 chandra_repro indir=16142,16143,16626,16627 verbose=1 outdir="" clobber=yes check_vf_pha=yes
 ```
-# Processing each ID before Alignment
+# Pre-processing each ID before Alignment
 
 run from the repro/ files and ardlib is global and so need to change everytime switches different obsID
 
@@ -77,4 +77,19 @@ wavdetect infile=./16142_0.5-7_thresh.img \
          scales="1 2 4 8 16 32" \
          maxiter=3 sigthresh=5e-6 ellsigma=5.0 \
          clobber=yes
+```
+# Changing Coordinates for further analysis
+
+Further analysis needs the RA-Dec coordinate system in the decimal system.
+
+```bash
+python regCoordinate_change.py
+```
+
+### CIAO Tool: `reproject_aspect`
+
+Align the images
+
+```bash
+punlearn reporject_aspect
 ```
