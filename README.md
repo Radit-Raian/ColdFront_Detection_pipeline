@@ -2,7 +2,6 @@
 
 initial running for 16142, 16143, 16626, 16627 (reference)
 
- reproject_aspect
 → reproject_events
 → blanksky
 → fluximage
@@ -18,7 +17,7 @@ run from parent directory at the location of four ObsID, for my analysis- data/
 ```bash
 chandra_repro indir=16142,16143,16626,16627 verbose=1 outdir="" clobber=yes check_vf_pha=yes
 ```
-# Pre-processing each ID before Alignment
+## Pre-processing each ID before Alignment
 
 run from the repro/ files and ardlib is global and so need to change everytime switches different obsID
 
@@ -78,13 +77,36 @@ wavdetect infile=./16142_0.5-7_thresh.img \
          maxiter=3 sigthresh=5e-6 ellsigma=5.0 \
          clobber=yes
 ```
-# Correcting Absolute Astrometry
+## Correcting Absolute Astrometry
 
-Further analysis needs the RA-Dec coordinate system in the decimal system.
 
+Further analysis needs the RA-Dec coordinate system in the decimal system. 
 ```bash
 python regCoord_change.py
 ```
+Here we will apply both `reproject_events` and `wcs_update`. Because-
+
+<ul>
+  <li><code>wcs_update</code>:
+    <ul>
+      <li>Fixes absolute astrometry</li>
+      <li>Applies small shift/rotation correction</li>
+      <li>Does NOT change pixel grid</li>
+      <li>Does NOT put files on identical tangent plane</li>
+    </ul>
+  </li>
+</ul>
+
+<ul>
+  <li><code>reproject_events</code>:
+    <ul>
+      <li>Forces all event files onto the exact same sky grid</li>
+      <li>Makes them compatible for merging</li>
+      <li>Required before <code>merge_obs</code></li>
+    </ul>
+  </li>
+</ul>
+
 
 ### CIAO Tool: `wcs_match`
 
@@ -130,4 +152,18 @@ pset wcs_update wcsfile=16142_0.5-7_thresh.img
 wcs_update
 
 dmhedit acisf16142_corrected_evt2.fits file= op=add key=ASOLFILE value=pcadf16142_000N001_corrected_asol1.fits
+```
+### CIAO Tool: `reproject_events`
+
+```bash
+punlearn reproject_events
+
+pset reproject_events infile=acisf16142_corrected_evt2.fits
+pset reproject_events outfile=acisf16142_reproj_evt2.fits
+pset reproject_events match=../../16627/repro/acisf16627_corrected_evt2.fits
+pset reproject_events aspect=none
+pset reproject_events clobber=yes
+verbose=1
+
+reproject_events
 ```
