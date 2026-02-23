@@ -83,7 +83,7 @@ wavdetect infile=./16142_0.5-7_thresh.img \
 Further analysis needs the RA-Dec coordinate system in the decimal system.
 
 ```bash
-python regCoordinate_change.py
+python regCoord_change.py
 ```
 
 ### CIAO Tool: `reproject_aspect`
