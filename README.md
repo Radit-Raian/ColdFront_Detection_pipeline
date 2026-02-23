@@ -22,3 +22,9 @@ run from parent directory at the location of four ObsID, for my analysis- data/
 ```bash
 chandra_repro indir=16142,16143,16626,16627 verbose=1 outdir="" clobber=yes check_vf_pha=yes
 ```
+# Processing each ID before Alignment
+
+```bash
+punlearn ardlib
+acis_set_ardlib ./acisf16142_repro_bpix1.fits
+```
