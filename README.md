@@ -2,12 +2,7 @@
 
 initial running for 16142, 16143, 16626, 16627 (reference)
 
-→ reproject_events
-→ blanksky
-→ fluximage
-→ mkpsfmap
-→ wavdetect
-→ dmfilth
+dmfilth
 → merge_obs
 
 ### CIAO Tool: `chandra_repro`
@@ -166,4 +161,56 @@ pset reproject_events clobber=yes
 verbose=1
 
 reproject_events
+```
+
+## Reprocessing each ObsID for Merging
+
+### CIAO Tool: `blanksky`, `blanksky_image`
+
+```bash
+punlearn blanksky
+blanksky evtfile="acisf16142_reproj_evt2.fits[@{16142_gti.fits}]" \
+  outfile=16142_background_clean.evt tmpdir=./ clobber=yes verbose=1
+dmhedit infile="./16142_background_clean.evt" \
+        filelist=none key="OBS_ID" value="16142" operation="add"
+blanksky_image bkgfile=16142_background_clean.evt outroot=16142_blank \
+               imgfile=16142_0.5-7_thresh.img tmpdir=./ clobber=yes
+```
+### CIAO Tool: `fluximage`,`mkpsfmap`,`wavdetect`
+
+```bash
+punlearn fluximage
+fluximage infile=./acisf16142_reproj_evt2.fits outroot=./16142_reprojected binsize=1 bands=0.5:7:2.3 clobber=yes
+punlearn mkpsfmap
+mkpsfmap infile=./16142_reprojected_0.5-7_thresh.img \
+         outfile=./16142_reprojected_0.5-7.psf \
+         energy=2.3 ecf=0.9 clobber=yes
+punlearn wavdetect
+wavdetect infile=./16142_reprojected_0.5-7_thresh.img \
+         psffile=./16142_reprojected_0.5-7.psf \
+         expfile=./16142_reprojected_0.5-7_thresh.expmap \
+         outfile=./16142_reprojected_src_0.5-7.fits \
+         scellfile=./16142_reprojected_scell_0.5-7.fits \
+         imagefile=./16142_reprojected_imgfile_0.5-7.img \
+         defnbkgfile=./16142_reprojected_defnbkg_0.5-7.fits \
+         regfile=./16142_reprojected_src_0.5-7-noem.reg \
+         scales="1 2 4 8 16 32" \
+         maxiter=3 sigthresh=5e-6 ellsigma=5.0 \
+         clobber=yes
+```
+run this before going to dmfilth
+
+```bash
+python bkg.py
+```
+
+### CIAO Tool: `dmfilth`
+
+```bash
+dmfilth infile=16142_reprojected_0.5-7_flux.img \
+        outfile=16142_src_extracted.img \
+        method=POLY \
+        srclist=@16142_reprojected_src_0.5-7-noem.reg \
+        bkglist=@16142_bkg_poly.reg \
+        clobber=yes
 ```
