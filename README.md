@@ -166,7 +166,7 @@ reproject_events
 
 ```bash
 punlearn blanksky
-blanksky evtfile="acisf16142_reproj_evt2.fits[@{16142_gti.fits}]" \
+blanksky evtfile="acisf16142_reproj_evt2.fits[@16142_gti.fits]" \
   outfile=16142_background_clean.evt tmpdir=./ clobber=yes verbose=1
 dmhedit infile="./16142_background_clean.evt" \
         filelist=none key="OBS_ID" value="16142" operation="add"
@@ -186,7 +186,7 @@ fluximage infile=./acisf16142_reproj_evt2.fits outroot=./16142_reprojected binsi
 punlearn merge_obs
 ```
 
-####Draft (Not run yet)!
+# Draft (Not run yet)!
 run this before going to source_extraction
 ```bash
 python bkg.py
