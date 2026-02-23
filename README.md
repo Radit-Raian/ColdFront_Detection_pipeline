@@ -128,4 +128,6 @@ pset wcs_update outfile=acisf16142_wcs_corrected_evt2.fits
 pset wcs_update transformfile=16142.xform
 pset wcs_update wcsfile=16142_0.5-7_thresh.img
 wcs_update
+
+dmhedit acisf16142_corrected_evt2.fits file= op=add key=ASOLFILE value=pcadf16142_000N001_corrected_asol1.fits
 ```
