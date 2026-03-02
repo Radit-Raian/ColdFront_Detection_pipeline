@@ -193,25 +193,38 @@ punlearn merge_obs
 merge_obs @clean_evt.list merged_output/ bin=1 bands=broad clobber=yes
 ```
 
-# Draft (Not run yet)!
-run this before going to source_extraction
-```bash
-python bkg.py
-```
+## Cropping the Image:
 
-### CIAO Tool: `dmfilth`
+First create regions/src_0.5-7-nps-noem.reg manually
 
 ```bash
-dmfilth infile=16142_reprojected_0.5-7_flux.img \
-        outfile=16142_src_extracted_flux.fits \
-        method=POLY \
-        srclist=@16142_reprojected_src_0.5-7-noem.reg \
-        bkglist=@16142_bkg_poly.reg \
+dmcopy "broad_thresh.img[exclude sky=region(regions/src_0.5-7-nps-noem.reg)]"
+        broad_thresh_noem.img
         clobber=yes
 ```
-### CIAO Tool: `dmcopy`
-
+Then run wavedetect to find the sources outside the core regions.
 ```bash
-dmcopy "acisf16142_reproj_evt2.fits[exclude sky=region(16142_reprojected_src_0.5-7-noem.reg)]" \
-       acisf16142_nosrc_evt2.fits
+wavdetect infile=broad_thresh_noem.img \
+          psffile=none \
+          expfile=broad_thresh.expmap \
+          outfile=regions/broad_src_0.5-7.fits \
+          scellfile=regions/broad_scell_0.5-7.fits \
+          imagefile=regions/broad_img_0.5-7.img \
+          defnbkgfile=regions/broad_defnbkg_0.5-7.fits \
+          regfile=regions/broad_src_0.5-7-pointsources.reg \
+          scales="1 2 4 8 16 32" \
+          maxiter=3 sigthresh=1e-6 ellsigma=5 \
+          clobber=yes \
+          verbose=1
+```
+```bash
+dmcopy "broad_flux.img[exclude sky=region(regions/broad_src_0.5-7-pointsources.reg)]"
+        scaled_broad_flux_cropped.fits
+        clobber=yes
+```
+Now crop the image you want to analyze and so save the file square.reg
+```bash
+dmcopy "scaled_broad_flux_cropped.fits[sky=region(regions/square.reg)]"
+        scaled_broad_flux_final.fits
+        clobber=yes
 ```
